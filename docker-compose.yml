@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+    flask:
+        build: NAO-Payroll
+        container_name: payroll_auditing
+        restart: always
+        networks:
+            - tracking
+        environment:
+            - APP_NAME=PayrollAuditing
+        expose:
+            - 8000
+        volumes:
+            -   data:/app/application/db
+            -   logdata:/var/log/uwsgi
+    nginx:
+        build: nginx
+        container_name: tracking_dashboard_nginx
+        restart: always
+        networks:
+            - tracking
+        ports:
+            - "10.10.20.181:8080:5050"
+        volumes:
+          - logdata:/var/log/nginx
+volumes:
+  data:
+    driver: local
+  logdata:
+    driver: local
+
+networks:
+   tracking:
+    driver: bridge
+    external: false
+
+
